@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bantz.local/schemas/task-contract.schema.json",
+  "title": "TaskContract",
+  "description": "Görev yaşam döngüsünü ve veri yapısını tanımlayan sözleşme şeması",
+  "type": "object",
+  "required": ["taskId", "traceId", "title", "status", "createdAt", "source"],
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Görevin tekil kimliği"
+    },
+    "traceId": {
+      "type": "string",
+      "description": "Dağıtık izleme ve log korelasyon kimliği"
+    },
+    "title": {
+      "type": "string",
+      "description": "Görevin kısa başlığı veya kullanıcı talimatı"
+    },
+    "description": {
+      "type": "string",
+      "description": "Görevin detaylı açıklaması"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "created",
+        "planned",
+        "waiting_for_approval",
+        "queued",
+        "running",
+        "waiting_for_user",
+        "verifying",
+        "completed",
+        "failed",
+        "cancelled",
+        "timed_out"
+      ],
+      "description": "Görevin geçerli yaşam döngüsü durumu"
+    },
+    "source": {
+      "type": "string",
+      "enum": ["user_chat", "voice_input", "scheduler", "proactive", "guest_agent"],
+      "description": "Görevi başlatan kaynak"
+    },
+    "environment": {
+      "type": "string",
+      "enum": ["host", "vm_hyperv", "vm_mock"],
+      "default": "host",
+      "description": "Görevin yürütüleceği hedef ortam"
+    },
+    "steps": {
+      "type": "array",
+      "description": "Planlayıcı tarafından belirlenen adımlar",
+      "items": {
+        "type": "object",
+        "required": ["stepId", "port", "action", "params", "status"],
+        "properties": {
+          "stepId": { "type": "string" },
+          "port": { "type": "string" },
+          "action": { "type": "string" },
+          "params": { "type": "object" },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "running", "success", "failed", "skipped"]
+          },
+          "result": { "type": ["object", "null"] },
+          "error": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "evidenceIds": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Göreve ait toplanan kanıt dosyalarının ID listesi"
+    },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "startedAt": { "type": ["string", "null"], "format": "date-time" },
+    "completedAt": { "type": ["string", "null"], "format": "date-time" },
+    "error": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

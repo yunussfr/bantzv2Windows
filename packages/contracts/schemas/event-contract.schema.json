@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bantz.local/schemas/event-contract.schema.json",
+  "title": "EventContract",
+  "description": "EventBus üzerindeki olay iletileri veri sözleşmesi şeması",
+  "type": "object",
+  "required": ["eventId", "eventType", "timestamp", "traceId", "payload"],
+  "properties": {
+    "eventId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Olayın tekil kimliği"
+    },
+    "eventType": {
+      "type": "string",
+      "enum": [
+        "task_created",
+        "task_status_changed",
+        "task_completed",
+        "task_failed",
+        "approval_requested",
+        "approval_resolved",
+        "vm_status_changed",
+        "avatar_state_changed",
+        "voice_state_changed",
+        "evidence_collected",
+        "anomaly_detected"
+      ],
+      "description": "Yayınlanan olayın tipi"
+    },
+    "correlationId": {
+      "type": ["string", "null"],
+      "description": "İlgili üst görev veya istek kimliği"
+    },
+    "traceId": {
+      "type": "string",
+      "description": "Korelasyon ve izleme kimliği"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "description": "Olayı yayınlayan bileşen"
+    },
+    "payload": {
+      "type": "object",
+      "description": "Olay tipine özgü veri paketi"
+    }
+  },
+  "additionalProperties": false
+}
